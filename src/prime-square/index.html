@@ -1,0 +1,79 @@
+<html>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+let canvas = document.getElementById('canvas');
+let ctx = canvas.getContext('2d');
+
+let width = Math.min(document.body.clientWidth, 1000);
+let height = width;
+console.log(width * height);
+
+let cx = Math.floor(width / 2);
+let cy = Math.floor(height / 2);
+
+canvas.width = width;
+canvas.height = height;
+
+spiral(width * height);
+
+function spiral(N) {
+  let primes = findPrimesUntilN(N);
+  let x = 0;
+  let y = 0;
+  let primeIndex = 0;
+
+  for(let i = 0; i < N; ++i) {
+    if (i+1 === primes[primeIndex]) {
+      drawPixel(x + cx, y + cy, '');
+      primeIndex++;
+    }
+
+    if(Math.abs(x) <= Math.abs(y) && (x != y || x >= 0))
+        x += ((y >= 0) ? 1 : -1);
+    else
+        y += ((x >= 0) ? -1 : 1);
+  }
+}
+
+function drawPixel(x,y,c) {
+  ctx.beginPath();
+  ctx.strokeStyle = 'black'; 
+  ctx.moveTo(x,y);
+  ctx.lineTo(x+1,y); // one pixel long
+  ctx.stroke();
+}
+
+function findPrimesUntilN(n) {
+  let nums = [false, false];
+  for (let i = 2; i <= n; ++i) {
+    nums.push(true);
+  }
+
+  let num = 2;
+  let acc = num;
+
+  for (let i = 2; i <= n; ++i) {
+    if (nums[i] === false) {
+      continue;
+    }
+    let acc = i+i;
+    while (acc <= n) {
+      nums[acc] = false;
+      acc += i;
+    }
+  }
+
+  let obj = [];
+
+  nums.forEach(function(item, index) {
+    if (item === true) {
+      obj.push(index);
+    }
+  });
+  
+  return obj;
+}
+</script>
+</body>
+</html>
